@@ -8,7 +8,7 @@ date=$(date '+%Y%m%d')
 time=$(date '+%H%M')
 timestamp="$date-$time"
 
-archive_name="archive-$timestamp.tar"
+archive_name="${ARCHIVE_PREFIX:-archive}-$timestamp.tar"
 archive_path="$backup_dir/$archive_name"
 
 add_files_to_archive() {
