@@ -15,11 +15,21 @@ add_files_to_archive() {
     base_dir="$1"
     target="$2"
 
-    # Check if the target file or directory exists
-    if [ -e "$base_dir/$target" ]; then
-        tar -rf "$archive_path" -C "$base_dir" "$target"
+    # Find matching files and directories
+    items=$(find "$base_dir" -maxdepth 1 -name "$target" 2>/dev/null)
+    if [ -n "$items" ]; then
+        echo "$items" | while IFS= read -r item; do
+            # Get relative path from base_dir
+            relative_path="${item#"$base_dir"/}"
+
+            # Skip if it's just the base directory itself
+            if [ "$relative_path" != "$item" ] && [ -n "$relative_path" ]; then
+                tar -rf "$archive_path" -C "$base_dir" "$relative_path"
+                log "Added to archive: $relative_path"
+            fi
+        done
     else
-        log "Warning: $target not found in $base_dir, skipping"
+        log "Warning: no files or directories matching '$target' found in $base_dir, skipping"
     fi
 }
 create_backup() {
@@ -37,9 +47,7 @@ create_backup() {
     add_files_to_archive "$data_dir" "attachments"
     add_files_to_archive "$data_dir" "sends"
     add_files_to_archive "$data_dir" "config.json"
-    add_files_to_archive "$data_dir" "rsa_key.der"
-    add_files_to_archive "$data_dir" "rsa_key.pem"
-    add_files_to_archive "$data_dir" "rsa_key.pub.der"
+    add_files_to_archive "$data_dir" "rsa_key.*"
 
     gzip "$archive_path"
 
