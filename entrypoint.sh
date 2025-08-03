@@ -2,11 +2,11 @@
 set -e
 
 log() {
-    echo "$(date '+%Y-%m-%d %H:%M') [entrypoint] $1"
+    echo "$1[$(date '+%Y-%m-%dT%H:%M:%SZ')] [entrypoint] $2"
 }
 
-echo "$CRON_SCHEDULE /usr/local/bin/backup.sh >> /dev/stdout 2>&1" > /etc/crontabs/root
+mkdir -p /tmp/crontabs
+echo "$CRON_SCHEDULE /usr/local/bin/backup.sh" > /tmp/crontabs/backup
 
-log "Using cron schedule: $CRON_SCHEDULE"
-log "Starting cron..."
-crond -f -l 2
+log "INFO" "Using cron schedule: $CRON_SCHEDULE"
+supercronic /tmp/crontabs/backup

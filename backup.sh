@@ -55,7 +55,7 @@ create_backup() {
 
 encrypt_archive() {
     # Encrypt using GPG with symmetric encryption
-    echo "$ENCRYPTION_PASSPHRASE" | gpg --batch --yes --quiet --cipher-algo AES256 \
+    echo "$ENCRYPTION_PASSPHRASE" | gpg --homedir /tmp --batch --yes --quiet --cipher-algo AES256 \
         --compress-algo 0 --symmetric --passphrase-fd 0 \
         --output "$archive_path.gpg" "$archive_path"
 
@@ -88,10 +88,9 @@ cleanup_older_backups() {
 }
 
 log() {
-    echo "$(date '+%Y-%m-%d %H:%M') [backup] $1"
+    echo "[backup] $1"
 }
 
-log "Starting"
 create_backup
 if [ -n "$ENCRYPTION_PASSPHRASE" ]; then
     encrypt_archive
@@ -100,4 +99,3 @@ if [ -n "$S3_BUCKET" ] && [ -n "$S3_ENDPOINT" ]; then
     upload_archive_to_bucket
 fi
 cleanup_older_backups
-log "Finished"
