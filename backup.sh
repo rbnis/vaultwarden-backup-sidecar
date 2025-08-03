@@ -14,7 +14,13 @@ archive_path="$backup_dir/$archive_name"
 add_files_to_archive() {
     base_dir="$1"
     target="$2"
-    tar -rf "$archive_path" -C "$base_dir" "$target"
+
+    # Check if the target file or directory exists
+    if [ -e "$base_dir/$target" ]; then
+        tar -rf "$archive_path" -C "$base_dir" "$target"
+    else
+        log "Warning: $target not found in $base_dir, skipping"
+    fi
 }
 create_backup() {
     # Create staging area
