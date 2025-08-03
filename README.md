@@ -67,7 +67,7 @@ spec:
           image: ghcr.io/rbnis/vaultwarden-backup-sidecar:v1.0.0
           env:
             - name: ENCRYPTION_PASSPHRASE
-              values: hunter2
+              value: hunter2
             - name: S3_ENDPOINT
               value: https://s3.amazonaws.com
             - name: S3_BUCKET
@@ -154,8 +154,14 @@ If you want to upload backups to S3-compatible storage, configure these variable
 
 ## Building the Image
 
+To build the Docker image locally:
+
 ```bash
-docker buildx build -t vaultwarden-backup-sidecar:local .
+# Build for local architecture
+docker build -t vaultwarden-backup-sidecar:local .
+
+# Build for multiple architectures (requires buildx)
+docker buildx build --platform linux/amd64,linux/arm64 -t vaultwarden-backup-sidecar:local .
 ```
 
 ## Backup Archive Format
@@ -220,12 +226,45 @@ gpg --quiet --batch --yes --decrypt --passphrase="your-passphrase" \
     archive-20250803-0200.tar.gz.gpg | tar -xz
 ```
 
+### Logs
+
+To view logs in Kubernetes:
+```bash
+kubectl logs deployment/vaultwarden -c backup
+```
+
+To view backup logs in Docker Compose:
+```bash
+docker-compose logs vaultwarden-backup
+```
+
+### Manual Backup
+
+To run a backup manually instead of waiting for the cron schedule:
+```bash
+# Kubernetes
+kubectl exec deployment/vaultwarden -c backup -- /usr/local/bin/backup.sh
+
+# Docker Compose
+docker-compose exec vaultwarden-backup /usr/local/bin/backup.sh
+```
+
 ## Security Considerations
 
 - Mount Vaultwarden data as read-only (`:ro`) to prevent accidental modifications
 - Ensure backup storage has appropriate access controls
 - Consider encrypting backups when uploading to S3 for additional security
 - Use strong encryption passphrases when enabling encryption
+
+## Related Projects
+
+- [Vaultwarden](https://github.com/dani-garcia/vaultwarden) - The main Bitwarden server implementation
+- [Bitwarden](https://bitwarden.com/) - The original password manager
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
 
 ## License
 
