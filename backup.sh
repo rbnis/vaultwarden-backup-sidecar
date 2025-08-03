@@ -47,8 +47,15 @@ upload_archive_to_bucket() {
 }
 
 cleanup_older_backups() {
-    find "$backup_dir" -name 'archive-*.tar' -type f -mtime +7 -delete
-    log "Cleaned up archives older than 7 days"
+    local_retention_time_in_days="${RETENTION_DAYS:-7}"
+
+    # Only cleanup if retention time is a number greater than 0
+    if [ "$local_retention_time_in_days" -gt 0 ] 2>/dev/null; then
+        find "$backup_dir" -name 'archive-*.tar' -type f -mtime "+$local_retention_time_in_days" -delete
+        log "Cleaned up archives older than $local_retention_time_in_days days"
+    else
+        log "Backup cleanup disabled (RETENTION_DAYS not greater than 0)"
+    fi
 }
 
 log() {
