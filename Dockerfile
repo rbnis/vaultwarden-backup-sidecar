@@ -7,6 +7,9 @@ COPY entrypoint.sh /entrypoint.sh
 COPY backup.sh /usr/local/bin/backup.sh
 RUN chmod +x /entrypoint.sh /usr/local/bin/backup.sh
 
+RUN adduser -D nonroot
+USER nonroot
+
 ENV CRON_SCHEDULE="0 2 * * *"
 
 ENTRYPOINT ["/entrypoint.sh"]
