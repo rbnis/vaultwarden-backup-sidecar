@@ -78,7 +78,15 @@ encrypt_archive() {
 }
 
 upload_archive_to_bucket() {
-    bucket_path="s3://$S3_BUCKET/$date/$archive_name"
+    # Build S3 path with optional folder
+    if [ -n "$S3_FOLDER" ]; then
+        # Remove leading and trailing slashes from S3_FOLDER and ensure proper path structure
+        folder=$(echo "$S3_FOLDER" | sed 's|^/*||; s|/*$||')
+        bucket_path="s3://$S3_BUCKET/$folder/$date/$archive_name"
+    else
+        bucket_path="s3://$S3_BUCKET/$date/$archive_name"
+    fi
+
     s5cmd --endpoint-url "$S3_ENDPOINT" cp "$archive_path" "$bucket_path"
     log "Uploaded archive to $bucket_path via $S3_ENDPOINT"
 }

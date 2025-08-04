@@ -72,6 +72,8 @@ spec:
               value: https://s3.amazonaws.com
             - name: S3_BUCKET
               value: my-vaultwarden-backups
+            - name: S3_FOLDER
+              value: vaultwarden
             - name: AWS_ACCESS_KEY_ID
               value: your-access-key
             - name: AWS_SECRET_ACCESS_KEY
@@ -119,6 +121,7 @@ services:
       # Optional S3 configuration
       - S3_ENDPOINT=https://s3.amazonaws.com
       - S3_BUCKET=my-vaultwarden-backups
+      - S3_FOLDER=vaultwarden
       - AWS_ACCESS_KEY_ID=your-access-key
       - AWS_SECRET_ACCESS_KEY=your-secret-key
 
@@ -146,6 +149,7 @@ If you want to upload backups to S3-compatible storage, configure these variable
 | ----------------------- | ---------------------------- | ------- | ------------------------------------------ |
 | `S3_ENDPOINT`           | S3 endpoint URL              | -       | `https://s3.amazonaws.com`                 |
 | `S3_BUCKET`             | S3 bucket name               | -       | `my-vaultwarden-backups`                   |
+| `S3_FOLDER`             | S3 folder path within bucket | -       | `vaultwarden` or `backups/vaultwarden`     |
 | `AWS_ACCESS_KEY_ID`     | AWS access key ID            | -       | `AKIAIOSFODNN7EXAMPLE`                     |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret access key        | -       | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
 | `AWS_DEFAULT_REGION`    | AWS region (if using AWS S3) | -       | `us-east-1`                                |
