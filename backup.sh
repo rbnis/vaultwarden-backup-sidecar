@@ -87,7 +87,7 @@ upload_archive_to_bucket() {
         bucket_path="s3://$S3_BUCKET/$date/$archive_name"
     fi
 
-    s5cmd --endpoint-url "$S3_ENDPOINT" cp "$archive_path" "$bucket_path"
+    s5cmd --log error --endpoint-url "$S3_ENDPOINT" cp "$archive_path" "$bucket_path"
     log "Uploaded archive to $bucket_path via $S3_ENDPOINT"
 }
 
@@ -104,7 +104,7 @@ cleanup_older_backups() {
 }
 
 log() {
-    echo "[backup] $1"
+    echo "$1"
 }
 
 create_backup
