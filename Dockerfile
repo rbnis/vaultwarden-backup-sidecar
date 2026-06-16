@@ -1,4 +1,4 @@
-FROM alpine:3.23.4
+FROM alpine:3.24.1
 
 RUN apk add --no-cache sqlite tar gzip gnupg
 RUN apk add --no-cache s5cmd --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
